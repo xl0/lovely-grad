@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "lovely-grad"
+  site-url: "https://xl0.github.io/lovely-grad"
+  description: "🫀 Lovely Grad - tiny tensors with love"
+  repo-branch: master
+  repo-url: "https://github.com/xl0/lovely-grad"
