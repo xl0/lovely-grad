@@ -14,6 +14,13 @@ website:
   navbar:
     background: primary
     search: true
+    right:
+      - icon: github
+        href: "http://github.com/xl0/lovely-gard"
+      - icon: twitter
+        href: "https://twitter.com/xl0xl0xl0"
+      - icon: mastodon
+        href: https://sigmoid.social/@xl0
   sidebar:
     style: floating
 
