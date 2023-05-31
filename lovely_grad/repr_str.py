@@ -21,7 +21,7 @@ from tinygrad.tensor import Tensor, DType, dtypes
 
 # %% ../nbs/00_repr_str.ipynb 7
 dtnames =   {   "half": "f16",
-                "float": "",    # Default dtype in TinyGrad
+                "float": "f32",
                 "char": "i8",
                 "uchar": "u8",
                 "int":   "i32",
@@ -30,7 +30,7 @@ dtnames =   {   "half": "f16",
 
 
 def short_dtype(x: DType) -> str:
-    return dtnames.get(x.dtype.name, str(x.dtype))
+    return dtnames.get(x.dtype.name, str(x.dtype)) if x.dtype != Tensor.default_type else ""
 
 # %% ../nbs/00_repr_str.ipynb 9
 def plain_repr(x: Tensor):
