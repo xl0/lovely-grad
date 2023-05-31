@@ -11,4 +11,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/quarto-ghp@master]
+    steps:
+      - name: Install latest tinygrad
+        shell: bash
+        run: |
+          pip install -Uq git+https://github.com/xl0/tinygrad
+
+      - uses: fastai/workflows/quarto-ghp@master

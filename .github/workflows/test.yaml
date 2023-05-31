@@ -4,4 +4,9 @@ on:  [workflow_dispatch, pull_request, push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps: [uses: fastai/workflows/nbdev-ci@master]
+    steps:
+      - name: Install latest tinygrad
+        shell: bash
+        run: |
+          pip install -Uq git+https://github.com/xl0/tinygrad
+      - uses: fastai/workflows/nbdev-ci@master

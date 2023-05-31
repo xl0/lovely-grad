@@ -1,0 +1,7 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_repr_str.ipynb
+      - 03a_utils.config.ipynb
+      - 03b_utils.misc.ipynb
