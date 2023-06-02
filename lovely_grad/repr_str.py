@@ -111,13 +111,15 @@ def to_str(x: Tensor,  # Input
     # elif get_config().show_mem_above <= x.nbytes:
         # numel = bytes_to_human(x.nbytes)
 
+    res  = ""
+    if verbose: # Put this on top before the tensor is possibly realized.
+        res += "\n" + plain_repr(x)
 
     just_realized = None
     if auto_realize and not x.lazydata.realized:
         just_realized = ansi_color("Realized "+ str(x.lazydata.op.op).split(".")[-1], "grey", color)
         x.realize()
 
-    res  = ""
     if x.lazydata.realized:
         # `lovely-numpy` is used to calculate stats when doing so on GPU would require
         # memory allocation (no-float tensors, tensors with bad numbers),
@@ -141,8 +143,6 @@ def to_str(x: Tensor,  # Input
     # else:
     #     res = plain_repr(x)
 
-    if verbose:
-        res += "\n" + plain_repr(x)
 
     if depth and x.ndim > 1:
         with config(show_mem_above=np.inf):
