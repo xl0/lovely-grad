@@ -18,7 +18,7 @@ from .repr_str import StrProxy
 
 
 from .repr_rgb import RGBProxy
-# from lovely_grad.repr_plt import PlotProxy
+from .repr_plt import PlotProxy
 from .repr_chans import ChanProxy
 
 # %% ../nbs/10_patch.ipynb 6
@@ -58,7 +58,7 @@ def monkey_patch(cls=Tensor):
     def chans(t: Tensor):
         return ChanProxy(t)
 
-    # # .plt and .plt(...)
-    # @patch_to(cls, as_prop=True)
-    # def plt(t: torch.Tensor):
-    #     return PlotProxy(t)
+    # .plt and .plt(...)
+    @patch_to(cls, as_prop=True)
+    def plt(t: Tensor):
+        return PlotProxy(t)
