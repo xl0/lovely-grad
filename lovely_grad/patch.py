@@ -17,9 +17,9 @@ from matplotlib import pyplot as plt, rcParams
 from .repr_str import StrProxy
 
 
-# from lovely_tensors.repr_rgb import RGBProxy
-# from lovely_tensors.repr_plt import PlotProxy
-# from lovely_tensors.repr_chans import ChanProxy
+from .repr_rgb import RGBProxy
+# from lovely_grad.repr_plt import PlotProxy
+from .repr_chans import ChanProxy
 
 # %% ../nbs/10_patch.ipynb 6
 def monkey_patch(cls=Tensor):
@@ -48,15 +48,15 @@ def monkey_patch(cls=Tensor):
     def deeper(self: Tensor):
         return StrProxy(self, depth=1)
 
-    # # .rgb and .rgb(...)
-    # @patch_to(cls, as_prop=True)
-    # def rgb(t: torch.Tensor):
-    #     return RGBProxy(t)
+    # .rgb and .rgb(...)
+    @patch_to(cls, as_prop=True)
+    def rgb(t: Tensor):
+        return RGBProxy(t)
     
-    # # .chans and .chans(...)
-    # @patch_to(cls, as_prop=True)
-    # def chans(t: torch.Tensor):
-    #     return ChanProxy(t)
+    # .chans and .chans(...)
+    @patch_to(cls, as_prop=True)
+    def chans(t: Tensor):
+        return ChanProxy(t)
 
     # # .plt and .plt(...)
     # @patch_to(cls, as_prop=True)
