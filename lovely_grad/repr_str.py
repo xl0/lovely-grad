@@ -76,7 +76,7 @@ def tensor_to_str_common(x: Tensor,  # Input
 # %% ../nbs/00_repr_str.ipynb 13
 def to_str(x: Tensor,  # Input
             verbose:        bool    =False,
-            auto_realize:    O[bool] =None,
+            auto_realize:   O[bool] =None,
             depth:          int     =0,
             lvl:            int     =0,
             color:          O[bool] =None
@@ -105,7 +105,7 @@ def to_str(x: Tensor,  # Input
 
     numel = None
     if x.shape and max(x.shape) != x.numel():
-        numel = f"n={x.ndim}"
+        numel = f"n={x.numel()}"
         # if get_config().show_mem_above <= x.nbytes:
         #     numel = sparse_join([numel, f"({bytes_to_human(x.nbytes)})"])
     # elif get_config().show_mem_above <= x.nbytes:
@@ -113,7 +113,7 @@ def to_str(x: Tensor,  # Input
 
     res  = ""
     if verbose: # Put this on top before the tensor is possibly realized.
-        res += "\n" + plain_repr(x)
+        res += plain_repr(x) + "\n"
 
     just_realized = None
     if auto_realize and not x.lazydata.realized:
@@ -136,10 +136,10 @@ def to_str(x: Tensor,  # Input
                 common = tensor_to_str_common(x, color=color)
 
             vals = pretty_str(x.numpy()) if 0 < x.numel() <= 10 else None
-            res = sparse_join([type_str, dtype, numel, common, grad, dev,  vals, just_realized])
+            res += sparse_join([type_str, dtype, numel, common, grad, dev, just_realized, vals])
     else:
         op = "Lazy " + str(x.lazydata.op.op).split(".")[-1]
-        res = sparse_join([type_str, dtype, numel, grad, dev, op])
+        res += sparse_join([type_str, dtype, numel, grad, dev, op])
     # else:
     #     res = plain_repr(x)
 
