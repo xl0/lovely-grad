@@ -2,6 +2,15 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 00_repr_str.ipynb
-      - 03a_utils.config.ipynb
-      - 03b_utils.misc.ipynb
+      - section: 🔎 Tensor representations
+        contents:
+          - 00_repr_str.ipynb
+          - 01_repr_rgb.ipynb
+          - 02_repr_plt.ipynb
+          - 05_repr_chans.ipynb
+      - section: ✨ Misc
+        contents:
+          - 03a_utils.config.ipynb
+          - 10_patch.ipynb
+          - matplotlib.ipynb
+          # - history.ipynb
