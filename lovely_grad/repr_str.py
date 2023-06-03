@@ -38,10 +38,6 @@ def plain_repr(x: Tensor):
     # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}" # Could be a sub-class.
     return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x)
 
-# def plain_str(x: torch.Tensor):
-#     "Pick the right function to get a plain str."
-#     # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}"
-#     return x._plain_str() if hasattr(type(x), "_plain_str") else str(x)
 
 # %% ../nbs/00_repr_str.ipynb 10
 def is_nasty(x: Tensor):

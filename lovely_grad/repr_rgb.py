@@ -13,7 +13,6 @@ from PIL import Image
 import numpy as np
 from tinygrad.tensor import Tensor
 from tinygrad import tensor
-# import torch
 
 from lovely_numpy.utils.utils import cached_property
 from lovely_numpy.utils.pad import pad_frame_gutters

@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['monkey_patch']
 
-# %% ../nbs/10_patch.ipynb 5
+# %% ../nbs/10_patch.ipynb 4
 from typing import Any, Optional as O
 
 
@@ -15,13 +15,11 @@ from fastcore.foundation import patch_to
 from matplotlib import pyplot as plt, rcParams
 
 from .repr_str import StrProxy
-
-
 from .repr_rgb import RGBProxy
 from .repr_plt import PlotProxy
 from .repr_chans import ChanProxy
 
-# %% ../nbs/10_patch.ipynb 11
+# %% ../nbs/10_patch.ipynb 5
 def monkey_patch(cls=Tensor):
     "Monkey-patch lovely features into `cls`" 
 

@@ -3,14 +3,14 @@
 # %% auto 0
 __all__ = ['set_config', 'get_config', 'config']
 
-# %% ../../nbs/03a_utils.config.ipynb 6
+# %% ../../nbs/03a_utils.config.ipynb 5
 from copy import copy
 from types import SimpleNamespace
 from typing import Optional as O, Union as U, Callable, TypeVar
 from contextlib import contextmanager
 from lovely_numpy import config as np_config
 
-# %% ../../nbs/03a_utils.config.ipynb 7
+# %% ../../nbs/03a_utils.config.ipynb 6
 class Config(SimpleNamespace):
     "Config"
     def __init__(self,
@@ -18,7 +18,7 @@ class Config(SimpleNamespace):
             threshold_max = 3,    # .abs() larger than 1e3 -> Sci mode
             threshold_min = -4,   # .abs() smaller that 1e-4 -> Sci mode
             sci_mode      = None, # Sci mode (2.3e4). None=auto
-            auto_realize   = True, # Realize Tensors before printing
+            auto_realize   = True,# Realize Tensors before printing
             show_mem_above= 1024, # Show memory footprint above this size
             indent        = 2,    # Indent for .deeper()
             color         = True, # ANSI colors in text
@@ -33,7 +33,7 @@ class Config(SimpleNamespace):
 _defaults = Config()
 _config = copy(_defaults)
 
-# %% ../../nbs/03a_utils.config.ipynb 10
+# %% ../../nbs/03a_utils.config.ipynb 9
 # Allows passing None as an argument to reset the 
 class _Default():
     def __repr__(self):
@@ -41,7 +41,7 @@ class _Default():
 D = _Default()
 Default = TypeVar("Default")
 
-# %% ../../nbs/03a_utils.config.ipynb 11
+# %% ../../nbs/03a_utils.config.ipynb 10
 def set_config( precision:      U[Default,int,None]  =D,
                 threshold_min:  U[Default,int,None]  =D,
                 threshold_max:  U[Default,int,None]  =D,
@@ -65,12 +65,12 @@ def set_config( precision:      U[Default,int,None]  =D,
             else:
                 setattr(_config, k, v)
 
-# %% ../../nbs/03a_utils.config.ipynb 12
+# %% ../../nbs/03a_utils.config.ipynb 11
 def get_config():
     "Get a copy of config variables"
     return copy(_config)
 
-# %% ../../nbs/03a_utils.config.ipynb 13
+# %% ../../nbs/03a_utils.config.ipynb 12
 @contextmanager
 def config( precision:      U[Default,int,None]  =D,
             threshold_min:  U[Default,int,None]  =D,
