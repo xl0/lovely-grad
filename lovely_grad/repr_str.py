@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['lovely']
 
-# %% ../nbs/00_repr_str.ipynb 5
+# %% ../nbs/00_repr_str.ipynb 4
 import warnings
 from typing import Union, Optional as O
 
@@ -19,7 +19,7 @@ from .utils.misc import is_cpu
 import tinygrad.helpers, tinygrad.tensor
 from tinygrad.tensor import Tensor, DType, dtypes
 
-# %% ../nbs/00_repr_str.ipynb 7
+# %% ../nbs/00_repr_str.ipynb 6
 dtnames =   {   "half": "f16",
                 "float": "f32",
                 "char": "i8",
@@ -32,14 +32,14 @@ dtnames =   {   "half": "f16",
 def short_dtype(x: DType) -> str:
     return dtnames.get(x.dtype.name, str(x.dtype)) if x.dtype != Tensor.default_type else ""
 
-# %% ../nbs/00_repr_str.ipynb 9
+# %% ../nbs/00_repr_str.ipynb 8
 def plain_repr(x: Tensor):
     "Pick the right function to get a plain repr"
     # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}" # Could be a sub-class.
     return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x)
 
 
-# %% ../nbs/00_repr_str.ipynb 10
+# %% ../nbs/00_repr_str.ipynb 9
 def is_nasty(x: Tensor):
     """Return true of any `x` values are inf or nan"""
     if x.shape == (): return False # min/max don't like zero-lenght arrays
@@ -55,7 +55,7 @@ def tensor_to_str_common(x: Tensor,  # Input
                         ddof=0):     # For "std" unbiasing
 
     if x.numel() == 0: return ansi_color("empty", "grey", color)
-    if x.eq(0).min().eq(1).numpy(): return ansi_color("all_zeros", "grey", color)
+    if ((x == 0).min() == 1).numpy(): return ansi_color("all_zeros", "grey", color)
 
     if x.ndim > 0:
         x_min = x.min().numpy().squeeze()

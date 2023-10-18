@@ -5,9 +5,31 @@
 
 <div>
 
-## [Read full docs](https://xl0.github.io/lovely-grad) \| ❤️ [Lovely Tensors](https://github.com/xl0/lovely-tensors) \| 💘 [Lovely `JAX`](https://github.com/xl0/lovely-jax) \| 💟 [Lovely `NumPy`](https://github.com/xl0/lovely-numpy)
+## [Read full docs](https://xl0.github.io/lovely-grad)
 
 </div>
+
+### More lovely stuff
+
+##### Working with tensors/arrays
+
+- [PyTorch](https://pytorch.org/): ❤️ [Lovely
+  Tensors](https://github.com/xl0/lovely-tensors)
+- [JAX](https://jax.readthedocs.io/): 💘 [Lovely
+  `JAX`](https://github.com/xl0/lovely-jax)
+- [NumPy](https://numpy.org/): 💟 [Lovely
+  `NumPy`](https://github.com/xl0/lovely-numpy)
+
+##### Proompting
+
+- Log prompts with 💌 [Lovely
+  Prompts](https://github.com/xl0/lovely-prompts) (WIP)
+- Better LangChain: 😎 [Proompter](https://github.com/xl0/proompter)
+  (WIP)
+
+##### Community
+
+- [Discord](https://discord.gg/qBaqauUWXP) (Now the link works!)
 
 ## Install
 
@@ -15,26 +37,7 @@
 pip install lovely-grad
 ```
 
-or
-
-// Coming soon //
-
-``` sh
-mamba install lovely-grad
-```
-
-or
-
-``` sh
-conda install -c conda-forge lovely-grad
-```
-
 ## How to use
-
-``` python
-# Add this if you are running in a notebook ot tinygraad gets upset
-import os; os.environ["DEBUG"] = "0"
-```
 
 How often do you find yourself debugging TinyGrad code? You dump a
 tensor to the cell output, and see this:
@@ -43,7 +46,7 @@ tensor to the cell output, and see this:
 numbers
 ```
 
-    <Tensor <LB (3, 196, 196) dtypes.float op:LoadOps.FROMCPU st:ShapeTracker(shape=(3, 196, 196), views=[View((3, 196, 196), (38416, 196, 1), 0, None)])> on CPU with grad None>
+    <Tensor <LB (3, 196, 196) dtypes.float op=buffer<115248, dtypes.float, 140110070756784> st=ShapeTracker(views=(View(shape=(3, 196, 196), strides=(38416, 196, 1), offset=0, mask=None, contiguous=True),))> on CPU with grad None>
 
 Or this
 
@@ -95,7 +98,7 @@ Better, huh?
 numbers[1,:6,1] # Still shows values if there are not too many.
 ```
 
-    Tensor[6] x∈[-0.443, -0.197] μ=-0.311 σ=0.091 CPU Realized RESHAPE [-0.197, -0.232, -0.285, -0.373, -0.443, -0.338]
+    Tensor[6] x∈[-0.443, -0.197] μ=-0.311 σ=0.091 CPU [-0.197, -0.232, -0.285, -0.373, -0.443, -0.338]
 
 ``` python
 spicy = numbers[0,:12,0].numpy() # Please add native support for this.
@@ -109,26 +112,26 @@ spicy = Tensor(spicy).reshape(2,6)
 spicy # Spicy stuff
 ```
 
-    Tensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized RESHAPE
+    Tensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU
 
 ``` python
 Tensor.zeros(10, 10) # A zero tensor - make it obvious
 ```
 
-    Tensor[10, 10] n=100 all_zeros CPU Realized CONTIGUOUS
+    Tensor[10, 10] n=100 all_zeros CPU Realized EXPAND
 
 ``` python
 spicy += 1 # Make ot lazy again
 spicy.p # The plain old way
 ```
 
-    <Tensor <LB (2, 6) dtypes.float op:BinaryOps.ADD st:ShapeTracker(shape=(2, 6), views=[View((2, 6), (6, 1), 0, None)])> on CPU with grad None>
+    <Tensor <LB (2, 6) dtypes.float op=BinaryOps.ADD st=ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))> on CPU with grad None>
 
 ``` python
 spicy.v # Verbose
 ```
 
-    <Tensor <LB (2, 6) dtypes.float op:BinaryOps.ADD st:ShapeTracker(shape=(2, 6), views=[View((2, 6), (6, 1), 0, None)])> on CPU with grad None>
+    <Tensor <LB (2, 6) dtypes.float op=BinaryOps.ADD st=ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))> on CPU with grad None>
     Tensor[2, 6] n=12 x∈[-3.540e+03, 1.000] μ=-392.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized ADD
 
 ## But I want to be lazy!
@@ -181,7 +184,7 @@ numbers.deeper
 numbers[:,:3,:5].deeper(2)
 ```
 
-    Tensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306 CPU Realized SHRINK
+    Tensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306 CPU
       Tensor[3, 5] n=15 x∈[-0.765, -0.337] μ=-0.492 σ=0.124 CPU
         Tensor[5] x∈[-0.440, -0.337] μ=-0.385 σ=0.041 CPU [-0.354, -0.337, -0.405, -0.440, -0.388]
         Tensor[5] x∈[-0.662, -0.405] μ=-0.512 σ=0.108 CPU [-0.405, -0.423, -0.491, -0.577, -0.662]
@@ -203,19 +206,19 @@ The important queston - is it our man?
 numbers.rgb
 ```
 
-![](index_files/figure-commonmark/cell-19-output-1.png)
+![](index_files/figure-commonmark/cell-18-output-1.png)
 
 *Maaaaybe?* Looks like someone normalized him.
 
 ``` python
-in_stats = ( (0.485, 0.456, 0.406),     # mean 
-             (0.229, 0.224, 0.225) )    # std
+in_stats = ( [0.485, 0.456, 0.406],     # mean 
+             [0.229, 0.224, 0.225] )    # std
 
 # numbers.rgb(in_stats, cl=True) # For channel-last input format
 numbers.rgb(in_stats)
 ```
 
-![](index_files/figure-commonmark/cell-20-output-1.png)
+![](index_files/figure-commonmark/cell-19-output-1.png)
 
 It’s indeed our hero, the Tenchman!
 
@@ -225,19 +228,19 @@ It’s indeed our hero, the Tenchman!
 (numbers+3).plt
 ```
 
-![](index_files/figure-commonmark/cell-21-output-1.svg)
+![](index_files/figure-commonmark/cell-20-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="mean", max_s=1000)
 ```
 
-![](index_files/figure-commonmark/cell-22-output-1.svg)
+![](index_files/figure-commonmark/cell-21-output-1.svg)
 
 ``` python
 (numbers+3).plt(center="range")
 ```
 
-![](index_files/figure-commonmark/cell-23-output-1.svg)
+![](index_files/figure-commonmark/cell-22-output-1.svg)
 
 ## See the `.chans`
 
@@ -256,7 +259,7 @@ numbers_01
 numbers_01.chans
 ```
 
-![](index_files/figure-commonmark/cell-25-output-1.png)
+![](index_files/figure-commonmark/cell-24-output-1.png)
 
 Let’s try with a Convolutional Neural Network
 
@@ -303,7 +306,7 @@ acts
 acts[0,:4].chans(cmap="coolwarm", scale=4)
 ```
 
-![](index_files/figure-commonmark/cell-30-output-1.png)
+![](index_files/figure-commonmark/cell-29-output-1.png)
 
 ## Grouping
 
@@ -319,13 +322,13 @@ eight_images = (eight_images
 eight_images
 ```
 
-    Tensor[2, 2, 2, 3, 196, 196] n=921984 x∈[0., 1.000] μ=0.382 σ=0.319 CPU Realized RESHAPE
+    Tensor[2, 2, 2, 3, 196, 196] n=921984 x∈[0., 1.000] μ=0.382 σ=0.319 CPU Realized NEG
 
 ``` python
 eight_images.rgb
 ```
 
-![](index_files/figure-commonmark/cell-32-output-1.png)
+![](index_files/figure-commonmark/cell-31-output-1.png)
 
 ``` python
 # Weights of the second conv layer of VGG11
@@ -343,7 +346,7 @@ weights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, 
 weights.plt
 ```
 
-![](index_files/figure-commonmark/cell-34-output-1.svg)
+![](index_files/figure-commonmark/cell-33-output-1.svg)
 
 ``` python
 # Weights of the second conv layer (64ch -> 128ch) of VGG11,
@@ -351,7 +354,7 @@ weights.plt
 weights.chans(frame_px=1, gutter_px=0)
 ```
 
-![](index_files/figure-commonmark/cell-35-output-1.png)
+![](index_files/figure-commonmark/cell-34-output-1.png)
 
 It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 
@@ -359,7 +362,7 @@ It’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.
 weights[:4].chans(frame_px=1, gutter_px=0, scale=10)
 ```
 
-![](index_files/figure-commonmark/cell-36-output-1.png)
+![](index_files/figure-commonmark/cell-35-output-1.png)
 
 ## Options \| [Docs](https://xl0.github.io/lovely-tensors/utils.config.html)
 
@@ -372,7 +375,7 @@ lg.set_config(precision=1, sci_mode=True, color=False)
 Tensor([1, 2, float("NaN")])
 ```
 
-    Tensor[3] μ=1.5e+00 σ=5.0e-01 NaN! CPU Realized FROMCPU [1.0e+00, 2.0e+00, nan]
+    Tensor[3] μ=1.5e+00 σ=5.0e-01 NaN! CPU [1.0e+00, 2.0e+00, nan]
 
 ``` python
 lg.set_config(precision=None, sci_mode=None, color=None) # None -> Reset to defaults
@@ -387,9 +390,9 @@ with lg.config(sci_mode=True, precision=5):
 print(Tensor([1., 2]))
 ```
 
-    Tensor[2] μ=1.500 σ=0.707 CPU Realized FROMCPU [1.000, 2.000]
-    Tensor[2] μ=1.50000e+00 σ=7.07107e-01 CPU Realized FROMCPU [1.00000e+00, 2.00000e+00]
-    Tensor[2] μ=1.500 σ=0.707 CPU Realized FROMCPU [1.000, 2.000]
+    Tensor[2] μ=1.500 σ=0.707 CPU [1.000, 2.000]
+    Tensor[2] μ=1.50000e+00 σ=7.07107e-01 CPU [1.00000e+00, 2.00000e+00]
+    Tensor[2] μ=1.500 σ=0.707 CPU [1.000, 2.000]
 
 ## Without `.monkey_patch`
 
@@ -403,7 +406,7 @@ lg.lovely(spicy)
 lg.lovely(spicy, verbose=True)
 ```
 
-    <Tensor buffer<12, dtypes.float> on CPU with grad None>
+    <Tensor <LB (2, 6) dtypes.float op=buffer<12, dtypes.float, 140110067875792> st=ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))> on CPU with grad None>
     Tensor[2, 6] n=12 x∈[-3.540e+03, 1.000] μ=-392.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU
 
 ``` python
@@ -419,19 +422,19 @@ lg.lovely(numbers, depth=1)
 lg.rgb(numbers, in_stats)
 ```
 
-![](index_files/figure-commonmark/cell-44-output-1.png)
+![](index_files/figure-commonmark/cell-43-output-1.png)
 
 ``` python
 lg.plot(numbers, center="mean")
 ```
 
-    AttributeError: module 'lovely_grad' has no attribute 'plot'
+![](index_files/figure-commonmark/cell-44-output-1.svg)
 
 ``` python
 lg.chans(numbers_01)
 ```
 
-![](index_files/figure-commonmark/cell-46-output-1.png)
+![](index_files/figure-commonmark/cell-45-output-1.png)
 
 ## Matplotlib integration \| [Docs](https://xl0.github.io/lovely-tensors/matplotlib.html)
 
@@ -439,13 +442,13 @@ lg.chans(numbers_01)
 numbers.rgb(in_stats).fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-47-output-1.png)
+![](index_files/figure-commonmark/cell-46-output-1.png)
 
 ``` python
 (numbers*0.3+0.5).chans.fig # matplotlib figure
 ```
 
-![](index_files/figure-commonmark/cell-48-output-1.png)
+![](index_files/figure-commonmark/cell-47-output-1.png)
 
 ``` python
 numbers.plt.fig.savefig('pretty.svg') # Save it
@@ -475,4 +478,4 @@ numbers_01.rgb(ax=ax2)
 numbers_01.chans(ax=ax3);
 ```
 
-![](index_files/figure-commonmark/cell-51-output-1.png)
+![](index_files/figure-commonmark/cell-50-output-1.png)
