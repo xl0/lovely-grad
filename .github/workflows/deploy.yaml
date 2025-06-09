@@ -12,9 +12,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install latest tinygrad
+      - name: Install latest tinygrad and nbdev
         shell: bash
         run: |
           pip install -Uq git+https://github.com/tinygrad/tinygrad
+          pip install -Uq nbdev
 
-      - uses: fastai/workflows/quarto-ghp@master
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ github.token }}
+          force_orphan: true
+          publish_dir: ./_docs
+          # The following lines assign commit authorship to the official GH-Actions bot for deploys to `gh-pages` branch.
+          # You can swap them out with your own user credentials.
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          publish_branch: gh-pages
