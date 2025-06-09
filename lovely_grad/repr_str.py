@@ -111,11 +111,11 @@ def to_str(x: Tensor,  # Input
         res += plain_repr(x) + "\n"
 
     just_realized = None
-    if auto_realize and not x.lazydata.base.realized:
-        just_realized = ansi_color("Realized "+ str(x.lazydata.op).split(".")[-1], "grey", color)
+    if auto_realize and not x.uop.base.realized:
+        just_realized = ansi_color("Realized "+ str(x.uop.op).split(".")[-1], "grey", color)
         x.realize()
 
-    if x.lazydata.base.realized:
+    if x.uop.base.realized:
         # `lovely-numpy` is used to calculate stats when doing so on GPU would require
         # memory allocation (no-float tensors, tensors with bad numbers),
         #
@@ -133,7 +133,7 @@ def to_str(x: Tensor,  # Input
             vals = pretty_str(x.numpy()) if 0 < x.numel() <= 10 else None
             res += sparse_join([type_str, dtype, numel, common, grad, dev, just_realized, vals])
     else:
-        op = "Lazy " + str(x.lazydata.op).split(".")[-1]
+        op = "Lazy " + str(x.uop.op).split(".")[-1]
         res += sparse_join([type_str, dtype, numel, grad, dev, op])
     # else:
     #     res = plain_repr(x)
