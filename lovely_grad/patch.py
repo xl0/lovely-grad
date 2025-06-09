@@ -21,7 +21,7 @@ from .repr_chans import ChanProxy
 
 # %% ../nbs/10_patch.ipynb 4
 def monkey_patch(cls=Tensor):
-    "Monkey-patch lovely features into `cls`" 
+    "Monkey-patch lovely features into `cls`"
 
     if not hasattr(cls, '_plain_repr'):
             cls._plain_repr = cls.__repr__
@@ -50,7 +50,7 @@ def monkey_patch(cls=Tensor):
     @patch_to(cls, as_prop=True)
     def rgb(t: Tensor):
         return RGBProxy(t)
-    
+
     # .chans and .chans(...)
     @patch_to(cls, as_prop=True)
     def chans(t: Tensor):

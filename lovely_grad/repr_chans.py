@@ -19,10 +19,10 @@ from .utils.config import get_config
 
 
 # %% ../nbs/05_repr_chans.ipynb 9
-class ChanProxy():   
+class ChanProxy():
     def __init__(self, t: Tensor):
         self.t = t
-        self.params = dict(cmap = "twilight", 
+        self.params = dict(cmap = "twilight",
                     cm_below="blue",
                     cm_above="red",
                     cm_ninf="cyan",
@@ -36,7 +36,7 @@ class ChanProxy():
                     ax=None)
 
     def __call__(self,
-                 cmap       :O[str]=None, 
+                 cmap       :O[str]=None,
                  cm_below   :O[str]=None,
                  cm_above   :O[str]=None,
                  cm_ninf    :O[str]=None,
@@ -48,7 +48,7 @@ class ChanProxy():
                  scale      :O[int]=None,
                  cl         :Any=None,
                  ax         :O[axes.Axes]=None):
-        
+
         self.params.update( {   k:v for
                                 k,v in locals().items()
                                 if k != "self" and v is not None } )

@@ -24,4 +24,3 @@ def is_cpu(x: Tensor) -> bool:
 
     # assert hasattr(x, "sharding"), f"Weird input type={type(input)}, expecrted Array, DeviceArray, or ShardedDeviceArray"
     # return False
-

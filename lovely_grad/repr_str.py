@@ -8,7 +8,6 @@ import warnings
 from typing import Union, Optional as O
 
 import numpy as np
-# import jax, jax.numpy as jnp
 
 from lovely_numpy import np_to_str_common, pretty_str, sparse_join, ansi_color, in_debugger, bytes_to_human
 from lovely_numpy import config as lnp_config
@@ -16,8 +15,8 @@ from lovely_numpy import config as lnp_config
 from .utils.config import get_config, config, set_config
 from .utils.misc import is_cpu
 
-import tinygrad.helpers, tinygrad.tensor
-from tinygrad.tensor import Tensor, DType, dtypes
+from tinygrad import Tensor
+from tinygrad.dtype import dtypes, DType
 
 # %% ../nbs/00_repr_str.ipynb 6
 dtnames =   {   "half": "f16",
@@ -30,7 +29,7 @@ dtnames =   {   "half": "f16",
 
 
 def short_dtype(x: DType) -> str:
-    return dtnames.get(x.dtype.name, str(x.dtype)) if x.dtype != Tensor.default_type else ""
+    return dtnames.get(x.dtype.name, str(x.dtype)) if x.dtype != dtypes.default_float else ""
 
 # %% ../nbs/00_repr_str.ipynb 8
 def plain_repr(x: Tensor):
@@ -43,7 +42,7 @@ def plain_repr(x: Tensor):
 def is_nasty(x: Tensor):
     """Return true of any `x` values are inf or nan"""
     if x.shape == (): return False # min/max don't like zero-lenght arrays
-    
+
     x_min = x.min().numpy().squeeze()
     x_max = x.max().numpy().squeeze()
 
@@ -112,11 +111,11 @@ def to_str(x: Tensor,  # Input
         res += plain_repr(x) + "\n"
 
     just_realized = None
-    if auto_realize and not x.lazydata.realized:
-        just_realized = ansi_color("Realized "+ str(x.lazydata.op.op).split(".")[-1], "grey", color)
+    if auto_realize and not x.lazydata.base.realized:
+        just_realized = ansi_color("Realized "+ str(x.lazydata.op).split(".")[-1], "grey", color)
         x.realize()
 
-    if x.lazydata.realized:
+    if x.lazydata.base.realized:
         # `lovely-numpy` is used to calculate stats when doing so on GPU would require
         # memory allocation (no-float tensors, tensors with bad numbers),
         #
@@ -134,7 +133,7 @@ def to_str(x: Tensor,  # Input
             vals = pretty_str(x.numpy()) if 0 < x.numel() <= 10 else None
             res += sparse_join([type_str, dtype, numel, common, grad, dev, just_realized, vals])
     else:
-        op = "Lazy " + str(x.lazydata.op.op).split(".")[-1]
+        op = "Lazy " + str(x.lazydata.op).split(".")[-1]
         res += sparse_join([type_str, dtype, numel, grad, dev, op])
     # else:
     #     res = plain_repr(x)
@@ -143,8 +142,8 @@ def to_str(x: Tensor,  # Input
     if depth and x.ndim > 1:
         with config(show_mem_above=np.inf):
             deep_width = min((x.shape[0]), conf.deeper_width) # Print at most this many lines
-            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(x[i,:].realize(), depth=depth-1, lvl=lvl+1)
-                                for i in range(deep_width)] 
+            deep_lines = [ " "*conf.indent*(lvl+1) + to_str(x[i,:].realize(), depth=depth-1, lvl=lvl+1, color=color)
+                                for i in range(deep_width)]
 
             # If we were limited by width, print ...
             if deep_width < x.shape[0]: deep_lines.append(" "*conf.indent*(lvl+1) + "...")
@@ -170,7 +169,7 @@ class StrProxy():
         self.lvl=lvl
         self.color=color
         history_warning()
-    
+
     def __repr__(self):
         if self.plain: return plain_repr(self.x)
         return to_str(self.x, verbose=self.verbose,

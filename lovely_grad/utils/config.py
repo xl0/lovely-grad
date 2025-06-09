@@ -34,7 +34,7 @@ _defaults = Config()
 _config = copy(_defaults)
 
 # %% ../../nbs/03a_utils.config.ipynb 8
-# Allows passing None as an argument to reset the 
+# Allows passing None as an argument to reset the
 class _Default():
     def __repr__(self):
         return "Ignore"

@@ -20,9 +20,9 @@ from .utils.config import get_config, config
 
 # %% ../nbs/02_repr_plt.ipynb 5
 # This is here for the monkey-patched tensor use case.
-# Gives the ability to call both .plt and .plt(ax=ax).  
+# Gives the ability to call both .plt and .plt(ax=ax).
 
-class PlotProxy(): 
+class PlotProxy():
     """Flexible `PIL.Image.Image` wrapper"""
 
     def __init__(self, x:Tensor):
@@ -41,7 +41,7 @@ class PlotProxy():
         self.params.update( { k:v for
                     k,v in locals().items()
                     if k != "self" and v is not None } )
-        
+
         _ = self.fig # Trigger figure generation
         return self
 
@@ -79,7 +79,7 @@ def plot(   x       :Tensor, # Tensor to explore
             plt0    :Any    =True,      # Take zero values into account
             ax      :O[axes.Axes]=None  # Optionally provide a matplotlib axes.
         ) -> PlotProxy:
-    
+
     args = locals()
     del args["x"]
 

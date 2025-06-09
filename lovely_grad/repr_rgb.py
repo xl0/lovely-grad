@@ -33,13 +33,13 @@ from .utils.config import get_config
 
 class RGBProxy():
     """Flexible `PIL.Image.Image` wrapper"""
-    
+
     def __init__(self, t:Tensor):
         assert t.ndim >= 3, f"Expecting at least 3 dimensions, got shape{t.shape}={t.ndim}"
         self.t =t
         self.params = dict(denorm   = None,
                             cl         = False,
-                            gutter_px  = 3,     
+                            gutter_px  = 3,
                             frame_px   = 1,
                             scale      = 1,
                             view_width = 966,
@@ -54,7 +54,7 @@ class RGBProxy():
                 scale       :O[int] =None,
                 view_width  :O[int] =None,
                 ax          :O[axes.Axes]=None):
-        
+
         self.params.update( { k:v for
                             k,v in locals().items()
                             if k != "self" and v is not None } )
@@ -85,5 +85,5 @@ def rgb(x           :Tensor,  # Tensor to display. [[...], C,H,W] or [[...], H,W
 
     args = locals()
     del args["x"]
-    
+
     return RGBProxy(x)(**args)
