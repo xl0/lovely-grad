@@ -3,14 +3,14 @@
 # %% auto 0
 __all__ = ['set_config', 'get_config', 'config']
 
-# %% ../../nbs/03a_utils.config.ipynb 4
+# %% ../../nbs/03a_utils.config.ipynb
 from copy import copy
 from types import SimpleNamespace
 from typing import Optional as O, Union as U, Callable, TypeVar
 from contextlib import contextmanager
 from lovely_numpy import config as np_config
 
-# %% ../../nbs/03a_utils.config.ipynb 5
+# %% ../../nbs/03a_utils.config.ipynb
 class Config(SimpleNamespace):
     "Config"
     def __init__(self,
@@ -33,7 +33,7 @@ class Config(SimpleNamespace):
 _defaults = Config()
 _config = copy(_defaults)
 
-# %% ../../nbs/03a_utils.config.ipynb 8
+# %% ../../nbs/03a_utils.config.ipynb
 # Allows passing None as an argument to reset the
 class _Default():
     def __repr__(self):
@@ -41,7 +41,7 @@ class _Default():
 D = _Default()
 Default = TypeVar("Default")
 
-# %% ../../nbs/03a_utils.config.ipynb 9
+# %% ../../nbs/03a_utils.config.ipynb
 def set_config( precision:      U[Default,int,None]  =D,
                 threshold_min:  U[Default,int,None]  =D,
                 threshold_max:  U[Default,int,None]  =D,
@@ -65,12 +65,12 @@ def set_config( precision:      U[Default,int,None]  =D,
             else:
                 setattr(_config, k, v)
 
-# %% ../../nbs/03a_utils.config.ipynb 10
+# %% ../../nbs/03a_utils.config.ipynb
 def get_config():
     "Get a copy of config variables"
     return copy(_config)
 
-# %% ../../nbs/03a_utils.config.ipynb 11
+# %% ../../nbs/03a_utils.config.ipynb
 @contextmanager
 def config( precision:      U[Default,int,None]  =D,
             threshold_min:  U[Default,int,None]  =D,

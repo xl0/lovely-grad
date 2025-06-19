@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['lovely']
 
-# %% ../nbs/00_repr_str.ipynb 4
+# %% ../nbs/00_repr_str.ipynb
 import warnings
 from typing import Union, Optional as O
 
@@ -18,7 +18,7 @@ from .utils.misc import is_cpu
 from tinygrad import Tensor
 from tinygrad.dtype import dtypes, DType
 
-# %% ../nbs/00_repr_str.ipynb 6
+# %% ../nbs/00_repr_str.ipynb
 dtnames =   {   "half": "f16",
                 "float": "f32",
                 "char": "i8",
@@ -31,14 +31,14 @@ dtnames =   {   "half": "f16",
 def short_dtype(x: DType) -> str:
     return dtnames.get(x.dtype.name, str(x.dtype)) if x.dtype != dtypes.default_float else ""
 
-# %% ../nbs/00_repr_str.ipynb 8
+# %% ../nbs/00_repr_str.ipynb
 def plain_repr(x: Tensor):
     "Pick the right function to get a plain repr"
     # assert isinstance(x, np.ndarray), f"expected np.ndarray but got {type(x)}" # Could be a sub-class.
     return x._plain_repr() if hasattr(x, "_plain_repr") else repr(x)
 
 
-# %% ../nbs/00_repr_str.ipynb 9
+# %% ../nbs/00_repr_str.ipynb
 def is_nasty(x: Tensor):
     """Return true of any `x` values are inf or nan"""
     if x.shape == (): return False # min/max don't like zero-lenght arrays
@@ -48,7 +48,7 @@ def is_nasty(x: Tensor):
 
     return np.isnan(x_min) or np.isinf(x_min) or np.isinf(x_max)
 
-# %% ../nbs/00_repr_str.ipynb 12
+# %% ../nbs/00_repr_str.ipynb
 def tensor_to_str_common(x: Tensor,  # Input
                         color=True,  # ANSI color highlighting
                         ddof=0):     # For "std" unbiasing
@@ -68,7 +68,7 @@ def tensor_to_str_common(x: Tensor,  # Input
 
         return sparse_join([minmax, meanstd])
 
-# %% ../nbs/00_repr_str.ipynb 13
+# %% ../nbs/00_repr_str.ipynb
 def to_str(x: Tensor,  # Input
             verbose:        bool    =False,
             auto_realize:   O[bool] =None,
@@ -153,14 +153,14 @@ def to_str(x: Tensor,  # Input
 
     return res
 
-# %% ../nbs/00_repr_str.ipynb 14
+# %% ../nbs/00_repr_str.ipynb
 def history_warning():
     "Issue a warning (once) ifw e are running in IPYthon with output cache enabled"
 
     if "get_ipython" in globals() and get_ipython().cache_size > 0:
         warnings.warn("IPYthon has its output cache enabled. See https://xl0.github.io/lovely-tensors/history.html")
 
-# %% ../nbs/00_repr_str.ipynb 17
+# %% ../nbs/00_repr_str.ipynb
 class StrProxy():
     def __init__(self, x: Tensor, plain=False, verbose=False, depth=0, lvl=0, color=None):
         self.x = x
@@ -181,7 +181,7 @@ class StrProxy():
     def __call__(self, depth=1):
         return StrProxy(self.x, depth=depth)
 
-# %% ../nbs/00_repr_str.ipynb 18
+# %% ../nbs/00_repr_str.ipynb
 def lovely(x: Tensor, # Tensor of interest
             verbose=False,  # Whether to show the full tensor
             depth=0,        # Show stats in depth

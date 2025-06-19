@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['plot']
 
-# %% ../nbs/02_repr_plt.ipynb 4
+# %% ../nbs/02_repr_plt.ipynb
 import math
 from typing import Union, Any, Optional as O
 
@@ -18,7 +18,7 @@ from lovely_numpy import config as np_config
 from .repr_str import to_str, pretty_str
 from .utils.config import get_config, config
 
-# %% ../nbs/02_repr_plt.ipynb 5
+# %% ../nbs/02_repr_plt.ipynb
 # This is here for the monkey-patched tensor use case.
 # Gives the ability to call both .plt and .plt(ax=ax).
 
@@ -72,7 +72,7 @@ class PlotProxy():
         return svg_repr
 
 
-# %% ../nbs/02_repr_plt.ipynb 6
+# %% ../nbs/02_repr_plt.ipynb
 def plot(   x       :Tensor, # Tensor to explore
             center  :str    ="zero",    # Center plot on  `zero`, `mean`, or `range`
             max_s   :int    =10000,     # Draw up to this many samples. =0 to draw all
