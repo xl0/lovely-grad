@@ -132,12 +132,13 @@ def to_str(x: Tensor,  # Input
 
             vals = pretty_str(x.numpy()) if 0 < x.numel() <= 10 else None
             res += sparse_join([type_str, dtype, numel, common, grad, dev, just_realized, vals])
+
+            if verbose:
+                res += "\n" + repr(x.numpy())
+
     else:
         op = "Lazy " + str(x.uop.op).split(".")[-1]
         res += sparse_join([type_str, dtype, numel, grad, dev, op])
-    # else:
-    #     res = plain_repr(x)
-
 
     if depth and x.ndim > 1:
         with config(show_mem_above=np.inf):
