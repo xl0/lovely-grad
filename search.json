@@ -1,0 +1,210 @@
+[
+  {
+    "objectID": "matplotlib.html",
+    "href": "matplotlib.html",
+    "title": "🎭 Matplotlib integration",
+    "section": "",
+    "text": "import nbdev; nbdev.nbdev_export()\nfrom dotenv import load_dotenv; load_dotenv();\n\n\n.fig\n.rgb, .chans and .plt all have a .fig attribute that returns a matplotlib figure object.\n\na = numbers.rgb.fig # matplotlib figure\nprint(type(a))\na\n\n&lt;class 'matplotlib.figure.Figure'&gt;\n\n\n\n\n\n\n\n\n\n\nnumbers.chans.fig\n\n\n\n\n\n\n\n\n\nnumbers.plt.fig\n\n\n\n\n\n\n\n\n\nnumbers.plt(center=\"mean\").fig\n\n\n\n\n\n\n\n\n\n\nSaving the figure\nYou can save the figure by calling its savefig method:\n\nnumbers.rgb.fig.savefig(\"tench.jpg\")\n\n\n!file tench.jpg; rm tench.jpg\n\ntench.jpg: JPEG image data, JFIF standard 1.01, resolution (DPI), density 100x100, segment length 16, baseline, precision 8, 196x196, components 3\n\n\n\n\nUsing existing Axes\nAll functions allow an ax= argument that accepts an existing Axes object into which they will plot:\n\nfig = plt.figure(figsize=(8,3))\nfig.set_constrained_layout(True)\ngs = fig.add_gridspec(2,2)\nax1 = fig.add_subplot(gs[0, :])\nax2 = fig.add_subplot(gs[1, 0])\nax3 = fig.add_subplot(gs[1,1:])\n\nax2.set_axis_off()\nax3.set_axis_off()\n\nnumbers.plt(ax=ax1)\nnumbers.rgb(ax=ax2)\nnumbers.chans(ax=ax3);\n\n\n\n\n\n\n\n\n\n\nWithout Jupyter\nBy default, the Lovely functions will call plt.close(fig) on the figures they create.\nThis prevents displaying the figures twice when running in Jupyter.\nIf you are not using Jupyter, here are 2 configuration options you might want to set:\nfig_close=False\n#!/usr/bin/env python\nfrom lovely_grad import config, set_config\n\n...\n\nset_config(fig_close=False)\nnumbers.chans()\n\n# or, using the context manager:\nwith config(fig_close=False):\n    numbers.chans()\n\nplt.show() # Will show all open figures\nfig_show=True\nIf set, lovely will call plt.show() after each figure creation.\nYou don’t need to set fig_close=False manually.\nset_config(fig_show=True)\n\nnumbers.chans() # Figure generated and shown\n\n# Note, you have to use the \"call\" syntax `( )`, as figure\n# generation is not triggerd by just accessing the attribute\n\nnumbers.chans  # No figure generated\n\nf = numbers.plt.fig # figure generated, shown, and returned.\nNote, plt.show() closes all figures.",
+    "crumbs": [
+      "✨ Misc",
+      "🎭 Matplotlib integration"
+    ]
+  },
+  {
+    "objectID": "repr_rgb.html",
+    "href": "repr_rgb.html",
+    "title": "🖌️ View as RGB images",
+    "section": "",
+    "text": "from nbdev.showdoc import *\nfrom fastcore.test import test_eq\nfrom lovely_grad import monkey_patch\n\n\nsource\n\nrgb\n\n rgb (x:tinygrad.tensor.Tensor, denorm:Any=None, cl:Any=False,\n      gutter_px:int=3, frame_px:int=1, scale:int=1, view_width:int=966,\n      ax:Optional[matplotlib.axes._axes.Axes]=None)\n\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nTensor to display. [[…], C,H,W] or [[…], H,W,C]\n\n\ndenorm\nAny\nNone\nReverse per-channel normalizatoin\n\n\ncl\nAny\nFalse\nChannel-last\n\n\ngutter_px\nint\n3\nIf more than one tensor -&gt; tile with this gutter width\n\n\nframe_px\nint\n1\nIf more than one tensor -&gt; tile with this frame width\n\n\nscale\nint\n1\nScale up. Can’t scale down.\n\n\nview_width\nint\n966\ntarget width of the image\n\n\nax\nOptional\nNone\nUse this Axes\n\n\nReturns\nRGBProxy\n\n\n\n\n\n\nrgb(image)\n\n\n\n\n\n\n\n\n\nrgb(image, scale=2)\n\n\n\n\n\n\n\n\n\ntwo_images = Tensor.stack(image, image)\ntwo_images\n\n\nTensor[2, 3, 196, 196] n=230496 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 CPU Realized ADD\n\n\n\n\nin_stats = (    [0.485, 0.456, 0.406],  # Mean\n                [0.229, 0.224, 0.225] ) # std\nrgb(two_images, denorm=in_stats)\n\n\n\n\n\n\n\n\n\n# Make 8 images with progressively higher brightness and stack them 2x2x2.\neight_images = (Tensor.stack(*([image]*8)) + Tensor(np.linspace(-2, 2, 8).astype(np.float32)).reshape(8,1,1,1))\neight_images = (eight_images\n                    .mul(Tensor(in_stats[1]).reshape(1,3,1,1))\n                    .add(Tensor(in_stats[0]).reshape(1,3,1,1))\n                    .clip(0,1)\n                    .reshape(2,2,2,3,196,196)\n)\neight_images\n\n\nTensor[2, 2, 2, 3, 196, 196] n=921984 x∈[0., 1.000] μ=0.382 σ=0.319 CPU Realized RESHAPE\n\n\n\n\nrgb(eight_images)\n\n\n\n\n\n\n\n\n\n# You can do channel-last too:\nrgb(image.permute(1, 2, 0), cl=True)",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "🖌️ View as RGB images"
+    ]
+  },
+  {
+    "objectID": "patch.html",
+    "href": "patch.html",
+    "title": "🙉 Monkey-patching",
+    "section": "",
+    "text": "source\n\nmonkey_patch\n\n monkey_patch (cls=&lt;class 'tinygrad.tensor.Tensor'&gt;)\n\nMonkey-patch lovely features into cls\n\nmonkey_patch()\n\n\nTensor.randn(2,2)\n\n\nTensor[2, 2] n=4 x∈[-1.824, 1.483] μ=-0.118 σ=1.371 CPU Realized MUL [[0.219, -1.824], [-0.350, 1.483]]\n\n\n\n\nnp_image = np.load(\"mysteryman.npy\")\nimage = Tensor(np_image)\n\nspicy = np_image.flatten()[:12] #.clone()\n\nspicy[0] *= 10000\nspicy[1] /= 10000\nspicy[2] = float('inf')\nspicy[3] = float('-inf')\nspicy[4] = float('nan')\n\nspicy = Tensor(spicy.reshape((2,6)))\nspicy\n\n\nTensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized COPY\n\n\n\n\nspicy.v\n\n\n&lt;Tensor &lt;UOp CPU (2, 6) float ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))&gt; on CPU with grad None&gt;\nTensor[2, 6] n=12 x∈[-3.541e+03, -3.369e-05] μ=-393.776 σ=1.113e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\nspicy.p\n\n&lt;Tensor &lt;UOp CPU (2, 6) float ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))&gt; on CPU with grad None&gt;\n\n\n\nimage.deeper\n\n\nTensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 CPU Realized COPY\n  Tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036 CPU\n  Tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973 CPU\n  Tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178 CPU\n\n\n\n\nimage[:3,:3,:5].deeper(depth=2)\n\nTensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306 CPU\n  Tensor[3, 5] n=15 x∈[-0.765, -0.337] μ=-0.492 σ=0.124 CPU\n    Tensor[5] x∈[-0.440, -0.337] μ=-0.385 σ=0.041 CPU [-0.354, -0.337, -0.405, -0.440, -0.388]\n    Tensor[5] x∈[-0.662, -0.405] μ=-0.512 σ=0.108 CPU [-0.405, -0.423, -0.491, -0.577, -0.662]\n    Tensor[5] x∈[-0.765, -0.474] μ=-0.580 σ=0.125 CPU [-0.474, -0.474, -0.542, -0.645, -0.765]\n  Tensor[3, 5] n=15 x∈[-0.513, -0.197] μ=-0.321 σ=0.099 CPU\n    Tensor[5] x∈[-0.303, -0.197] μ=-0.243 σ=0.055 CPU [-0.197, -0.197, -0.303, -0.303, -0.215]\n    Tensor[5] x∈[-0.408, -0.232] μ=-0.327 σ=0.084 CPU [-0.250, -0.232, -0.338, -0.408, -0.408]\n    Tensor[5] x∈[-0.513, -0.285] μ=-0.394 σ=0.102 CPU [-0.303, -0.285, -0.390, -0.478, -0.513]\n  Tensor[3, 5] n=15 x∈[-1.316, -0.672] μ=-0.964 σ=0.176 CPU\n    Tensor[5] x∈[-0.985, -0.672] μ=-0.846 σ=0.123 CPU [-0.672, -0.985, -0.881, -0.776, -0.916]\n    Tensor[5] x∈[-1.212, -0.724] μ=-0.989 σ=0.179 CPU [-0.724, -1.072, -0.968, -0.968, -1.212]\n    Tensor[5] x∈[-1.316, -0.828] μ=-1.058 σ=0.179 CPU [-0.828, -1.125, -1.020, -1.003, -1.316]\n\n\n\nimage.rgb\n\n\n\n\n\n\n\n\n\nin_stats = ( [0.485, 0.456, 0.406],     # mean\n             [0.229, 0.224, 0.225] )    # std\nimage.rgb(in_stats)\n\n\n\n\n\n\n\n\n\nmean = Tensor(in_stats[0])[:,None,None]\nstd = Tensor(in_stats[1])[:,None,None]\n\n(image*std + mean).chans # all pixels in [0, 1] range\n\n\n\n\n\n\n\n\n\n(image*0.3+0.5) # Slightly outside of [0, 1] range\n\n\nTensor[3, 196, 196] n=115248 x∈[-0.135, 1.292] μ=0.384 σ=0.322 CPU Realized ADD\n\n\n\n\n(image*0.3+0.5).chans # shows clipping (bright blue/red)\n\n\n\n\n\n\n\n\n\nimage.plt\n\n\n\n\n\n\n\n\n\nimage.plt(center=\"mean\")\n\n\n\n\n\n\n\n\n\nfig, ax = plt.subplots(figsize=(6, 2))\nplt.close(fig)\nimage.plt(ax=ax)\nfig",
+    "crumbs": [
+      "✨ Misc",
+      "🙉 Monkey-patching"
+    ]
+  },
+  {
+    "objectID": "utils.config.html",
+    "href": "utils.config.html",
+    "title": "🤔 Config",
+    "section": "",
+    "text": "Type\nDefault\nDetails\n\n\n\n\nprecision\nint\n3\nDigits after .\n\n\nthreshold_max\nint\n3\n.abs() larger than 1e3 -&gt; Sci mode\n\n\nthreshold_min\nint\n-4\n.abs() smaller that 1e-4 -&gt; Sci mode\n\n\nsci_mode\nNoneType\nNone\nSci mode (2.3e4). None=auto\n\n\nauto_realize\nbool\nTrue\nRealize Tensors before printing\n\n\nshow_mem_above\nint\n1024\nShow memory footprint above this size\n\n\nindent\nint\n2\nIndent for .deeper()\n\n\ncolor\nbool\nTrue\nANSI colors in text\n\n\ndeeper_width\nint\n9\nFor .deeper, width per level\n\n\nplt_seed\nint\n42\nSampling seed for plot\n\n\nfig_close\nbool\nTrue\nClose matplotlib Figure\n\n\nfig_show\nbool\nFalse\nCall plt.show() for .plt, .chans and .rgb\n\n\n\n\n\n\nsource",
+    "crumbs": [
+      "✨ Misc",
+      "🤔 Config"
+    ]
+  },
+  {
+    "objectID": "utils.config.html#examples",
+    "href": "utils.config.html#examples",
+    "title": "🤔 Config",
+    "section": "Examples",
+    "text": "Examples\n\nfrom lovely_grad import set_config, get_config, config, monkey_patch\n\n\nmonkey_patch()\n\n\nPrecision\n\nTensor([1., 2, float(\"NaN\")])\n\n\nTensor[3] x∈[1.000, 2.000] μ=nan σ=nan CPU Realized COPY [1.000, 2.000, nan]\n\n\n\n\nset_config(precision=5)\nTensor([1., 2, float(\"NaN\")])\n\n\nTensor[3] x∈[1.00000, 2.00000] μ=nan σ=nan CPU Realized COPY [1.00000, 2.00000, nan]\n\n\n\n\n\nScientific mode\n\nset_config(sci_mode=True) # Force always on\nTensor([1., 2, float(\"NaN\")])\n\n\nTensor[3] x∈[1.00000e+00, 2.00000e+00] μ=nan σ=nan CPU Realized COPY [1.00000e+00, 2.00000e+00, nan]\n\n\n\n\n\nColor on/off\n\nset_config(color=False) # Force always off\nTensor([1., 2, float(\"NaN\")])\n\nTensor[3] x∈[1.00000e+00, 2.00000e+00] μ=nan σ=nan CPU Realized COPY [1.00000e+00, 2.00000e+00, nan]\n\n\n\n# test_array_repr(str(jnp.array([1., 2, jnp.nan])),\n#         'Array[3] μ=1.50000e+00 σ=5.00000e-01 NaN! gpu:0 [1.00000e+00, 2.00000e+00, nan]')\n\n\n\nControl .deeper\n\nset_config(deeper_width=3)\nimage = np.load(\"mysteryman.npy\")\nimage[1,100,100] = float(\"NaN\")\n\nimage = Tensor(image)\n\nimage.deeper(2)\n\nTensor[3, 196, 196] n=115248 x∈[-2.11790e+00, 2.64000e+00] μ=nan σ=nan CPU Realized COPY\n  Tensor[196, 196] n=38416 x∈[-2.11790e+00, 2.24891e+00] μ=-3.24352e-01 σ=1.03588e+00 CPU\n    Tensor[196] x∈[-1.91241e+00, 2.24891e+00] μ=-6.73483e-01 σ=5.21962e-01 CPU\n    Tensor[196] x∈[-1.86103e+00, 2.16328e+00] μ=-7.38487e-01 σ=4.18080e-01 CPU\n    Tensor[196] x∈[-1.75828e+00, 2.19753e+00] μ=-8.05501e-01 σ=3.96848e-01 CPU\n    ...\n  Tensor[196, 196] n=38416 x∈[-1.96569e+00, 2.42857e+00] μ=nan σ=nan CPU\n    Tensor[196] x∈[-1.86064e+00, 2.41106e+00] μ=-5.28772e-01 σ=5.55960e-01 CPU\n    Tensor[196] x∈[-1.82563e+00, 2.35854e+00] μ=-5.61731e-01 σ=4.72772e-01 CPU\n    Tensor[196] x∈[-1.75560e+00, 2.37605e+00] μ=-6.21756e-01 σ=4.58436e-01 CPU\n    ...\n  Tensor[196, 196] n=38416 x∈[-1.80444e+00, 2.64000e+00] μ=-5.66674e-01 σ=1.17776e+00 CPU\n    Tensor[196] x∈[-1.71730e+00, 2.39599e+00] μ=-9.81537e-01 σ=3.50000e-01 CPU\n    Tensor[196] x∈[-1.75216e+00, 2.32627e+00] μ=-1.03418e+00 σ=3.13970e-01 CPU\n    Tensor[196] x∈[-1.64758e+00, 2.37856e+00] μ=-1.08647e+00 σ=3.14213e-01 CPU\n    ...\n\n\n\n# test_eq(len(str(image.deeper(2))), 1127)\n\n\n\nReser to defaults\n\nset_config(precision=None, sci_mode=None, color=None, deeper_width=None)\nTensor([1., 2, float(\"NaN\")])\n\n\nTensor[3] x∈[1.000, 2.000] μ=nan σ=nan CPU Realized COPY [1.000, 2.000, nan]\n\n\n\n\n# test_array_repr(str(jnp.array([1., 2, jnp.nan])),\n#     'Array[3] μ=1.500 σ=0.500 \\x1b[31mNaN!\\x1b[0m gpu:0 [1.000, 2.000, nan]')\n\n\n\nContext manager\n\ndisplay(Tensor([1., 2, float(\"NaN\")]))\nwith config(sci_mode=True, color=False):\n    display(Tensor([1., 2, float(\"NaN\")]))\ndisplay(Tensor([1., 2, float(\"NaN\")]))\n\n\nTensor[3] x∈[1.000, 2.000] μ=nan σ=nan CPU Realized COPY [1.000, 2.000, nan]\n\n\n\nTensor[3] x∈[1.000e+00, 2.000e+00] μ=nan σ=nan CPU Realized COPY [1.000e+00, 2.000e+00, nan]\n\n\n\nTensor[3] x∈[1.000, 2.000] μ=nan σ=nan CPU Realized COPY [1.000, 2.000, nan]\n\n\n\n\n\nMatplotlib and seed\n\nTensor.manual_seed(42)\n\n# torch.manual_seed(42)\n# a = torch.randn(1000)\n\n# key = jax.random.PRNGKey(0)\na = Tensor.randn(1000)\n\n\n_ = a.plt() # The figure was closed, nothing is displayed\n\n\nset_config(fig_close=False)\n_ = a.plt() # figure was not closed. All figures that are not closed are displayed after the cell runs.\n\n\n\n\n\n\n\n\nFor performance reasons, .plt will randomly sample up tp max_s elements from the data (10k be default).\nYou can change the seed used for this sampling (42 by default):\n\nset_config(plt_seed=1)\na.plt(max_s=100)\n\n\n\n\n\n\n\n\n\nset_config(plt_seed=2)\na.plt(max_s=100)\n\n\n\n\n\n\n\n\nMore details in matplotlib",
+    "crumbs": [
+      "✨ Misc",
+      "🤔 Config"
+    ]
+  },
+  {
+    "objectID": "repr_str.html",
+    "href": "repr_str.html",
+    "title": "🧾 View as a summary",
+    "section": "",
+    "text": "from nbdev.showdoc import *\nfrom fastcore.test import test_eq, test\n\n\nx = Tensor([0, 0, 1])\n((x == 0).min() == 1).realize().numpy()\n\narray(False)\n\n\n\nsource\n\nlovely\n\n lovely (x:tinygrad.tensor.Tensor, verbose=False, depth=0, color=None)\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nTensor of interest\n\n\nverbose\nbool\nFalse\nWhether to show the full tensor\n\n\ndepth\nint\n0\nShow stats in depth\n\n\ncolor\nNoneType\nNone\nForce color (True/False) or auto.\n\n\n\n\n\nExamples\n\nControl laziness of repr\n\nset_config(auto_realize=False)\nlovely(spicy)\n\nTensor[2, 6] n=12 CPU Lazy COPY\n\n\n\nlovely(spicy)\n\nTensor[2, 6] n=12 CPU Lazy COPY\n\n\n\nset_config(auto_realize=True)\nlovely(spicy)\n\n\nTensor[2, 6] n=12 x∈[-7.032e+03, 1.549] μ=-781.232 σ=2.210e+03 +Inf! -Inf! NaN! CPU Realized COPY\n\n\n\n\nlovely(spicy)\n\n\nTensor[2, 6] n=12 x∈[-7.032e+03, 1.549] μ=-781.232 σ=2.210e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\n\nShow the stats and values\n\nlovely(randoms[0])\n\n\nTensor CPU Realized RESHAPE -0.703\n\n\n\n\nlovely(randoms[:2])\n\nTensor[2] μ=-0.597 σ=0.151 CPU [-0.703, -0.490]\n\n\n\nlovely(randoms[:6].reshape((2, 3))) # More than 2 elements -&gt; show statistics\n\nTensor[2, 3] n=6 x∈[-2.011, 0.207] μ=-0.846 σ=0.862 CPU [[-0.703, -0.490, -0.322], [-1.755, 0.207, -2.011]]\n\n\n\nlovely(randoms[:11])                # More than 10 -&gt; suppress data output\n\nTensor[11] x∈[-2.011, 1.549] μ=-0.336 σ=1.162 CPU\n\n\n\n\nGradient\n\ng=Tensor([1.,2,3], requires_grad=True)\nlovely(g)\n\n\nTensor[3] x∈[1.000, 3.000] μ=2.000 σ=1.000 grad CPU Realized COPY [1.000, 2.000, 3.000]\n\n\n\n\n(g*g).sum().backward()\nlovely(g)\n\n\nTensor[3] x∈[1.000, 3.000] μ=2.000 σ=1.000 grad+ CPU [1.000, 2.000, 3.000]\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNote the green ‘+’ when the gradient is available.\n\n\n\nlovely(g.grad)\n\n\nTensor[3] x∈[2.000, 6.000] μ=4.000 σ=2.000 CPU Realized ADD [2.000, 4.000, 6.000]\n\n\n\n\n\nDo we have any floating point nasties?\n\n# Statistics and range are calculated on good values only, if there are at lest 3 of them.\nlovely(spicy)\n\n\nTensor[2, 6] n=12 x∈[-7.032e+03, 1.549] μ=-781.232 σ=2.210e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\nlovely(spicy, color=False)\n\nTensor[2, 6] n=12 x∈[-7.032e+03, 1.549] μ=-781.232 σ=2.210e+03 +Inf! -Inf! NaN! CPU\n\n\n\nlovely(Tensor([float(\"nan\")]*11))\n\n\nTensor[11] NaN! CPU Realized COPY\n\n\n\n\n\nIs the tensor all zeros?\n\nlovely(Tensor.zeros(12))\n\nTensor[12] CPU Lazy CONST\n\n\n\n# XXX empty tensors - fix when they work\n# lovely(jnp.array([], dtype=jnp.float16).reshape((0,0,0)))\n\n\n\nShows the dtype if it’s not the default.\n\nlovely(Tensor([1,2,3], dtype=dtypes.int8).realize())\n\nTensor[3] dtypes.char x∈[1, 3] μ=2.000 σ=0.816 CPU [1, 2, 3]\n\n\n\nlovely(spicy, verbose=True)\n\n\n&lt;Tensor &lt;UOp CPU (2, 6) float ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))&gt; on CPU with grad None&gt;\nTensor[2, 6] n=12 x∈[-7.032e+03, 1.549] μ=-781.232 σ=2.210e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\n\nWe need to go deeper\n\nimage = np.load(\"mysteryman.npy\")\nimage[1,2,3] = float('nan')\n\nimage = Tensor(image)\n\nlovely(image, depth=2) # Limited by set_config(deeper_lines=N)\n\n\nTensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=nan σ=nan CPU Realized COPY\n  Tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036 CPU\n    Tensor[196] x∈[-1.912, 2.249] μ=-0.673 σ=0.522 CPU\n    Tensor[196] x∈[-1.861, 2.163] μ=-0.738 σ=0.418 CPU\n    Tensor[196] x∈[-1.758, 2.198] μ=-0.806 σ=0.397 CPU\n    Tensor[196] x∈[-1.656, 2.249] μ=-0.849 σ=0.369 CPU\n    Tensor[196] x∈[-1.673, 2.198] μ=-0.857 σ=0.357 CPU\n    Tensor[196] x∈[-1.656, 2.146] μ=-0.848 σ=0.372 CPU\n    Tensor[196] x∈[-1.433, 2.215] μ=-0.784 σ=0.397 CPU\n    Tensor[196] x∈[-1.279, 2.249] μ=-0.695 σ=0.486 CPU\n    Tensor[196] x∈[-1.364, 2.249] μ=-0.637 σ=0.539 CPU\n    ...\n  Tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=nan σ=nan CPU\n    Tensor[196] x∈[-1.861, 2.411] μ=-0.529 σ=0.556 CPU\n    Tensor[196] x∈[-1.826, 2.359] μ=-0.562 σ=0.473 CPU\n    Tensor[196] x∈[-1.756, 2.376] μ=nan σ=nan CPU\n    Tensor[196] x∈[-1.633, 2.429] μ=-0.664 σ=0.430 CPU\n    Tensor[196] x∈[-1.651, 2.376] μ=-0.669 σ=0.399 CPU\n    Tensor[196] x∈[-1.633, 2.376] μ=-0.701 σ=0.391 CPU\n    Tensor[196] x∈[-1.563, 2.429] μ=-0.670 σ=0.380 CPU\n    Tensor[196] x∈[-1.475, 2.429] μ=-0.616 σ=0.386 CPU\n    Tensor[196] x∈[-1.511, 2.429] μ=-0.593 σ=0.399 CPU\n    ...\n  Tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178 CPU\n    Tensor[196] x∈[-1.717, 2.396] μ=-0.982 σ=0.350 CPU\n    Tensor[196] x∈[-1.752, 2.326] μ=-1.034 σ=0.314 CPU\n    Tensor[196] x∈[-1.648, 2.379] μ=-1.086 σ=0.314 CPU\n    Tensor[196] x∈[-1.630, 2.466] μ=-1.121 σ=0.305 CPU\n    Tensor[196] x∈[-1.717, 2.448] μ=-1.120 σ=0.302 CPU\n    Tensor[196] x∈[-1.717, 2.431] μ=-1.166 σ=0.314 CPU\n    Tensor[196] x∈[-1.560, 2.448] μ=-1.124 σ=0.326 CPU\n    Tensor[196] x∈[-1.421, 2.431] μ=-1.064 σ=0.383 CPU\n    Tensor[196] x∈[-1.526, 2.396] μ=-1.047 σ=0.417 CPU\n    ...",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "🧾 View as a summary"
+    ]
+  },
+  {
+    "objectID": "repr_chans.html",
+    "href": "repr_chans.html",
+    "title": "📺 View channels",
+    "section": "",
+    "text": "os.environ[\"DEBUG\"] = \"0\"\n\n\nfrom lovely_grad import monkey_patch\n\n\nsource\n\nchans\n\n chans (x:tinygrad.tensor.Tensor, cmap:str='twilight',\n        cm_below:str='blue', cm_above:str='red', cm_ninf:str='cyan',\n        cm_pinf:str='fuchsia', cm_nan:str='yellow', view_width:int=966,\n        gutter_px:int=3, frame_px:int=1, scale:int=1, cl:Any=False,\n        ax:Optional[matplotlib.axes._axes.Axes]=None)\n\nMap tensor values to colors. RGB[A] color is added as channel-last\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nInput, shape=([…], H, W)\n\n\ncmap\nstr\ntwilight\nUse matplotlib colormap by this name\n\n\ncm_below\nstr\nblue\nColor for values below -1\n\n\ncm_above\nstr\nred\nColor for values above 1\n\n\ncm_ninf\nstr\ncyan\nColor for -inf values\n\n\ncm_pinf\nstr\nfuchsia\nColor for +inf values\n\n\ncm_nan\nstr\nyellow\nColor for NaN values\n\n\nview_width\nint\n966\nTry to produce an image at most this wide\n\n\ngutter_px\nint\n3\nDraw write gutters when tiling the images\n\n\nframe_px\nint\n1\nDraw black frame around each image\n\n\nscale\nint\n1\n\n\n\ncl\nAny\nFalse\n\n\n\nax\nOptional\nNone\n\n\n\nReturns\nChanProxy\n\n\n\n\n\n\nin_stats = ( (0.485, 0.456, 0.406), (0.229, 0.224, 0.225) )\n\nnp_image = np.load(\"mysteryman.npy\")\nnp_image = (np_image * np.array(in_stats[1])[:,None,None])\nnp_image += np.array(in_stats[0])[:,None,None]\n\nnp_image = np_image.astype(np.float32)\n\nimage = Tensor(np_image)\n\nimage.rgb\n\n\n\n\n\n\n\n\n\nchans(image)\n\n\n\n\n\n\n\n\n\n# In R\nnp_image[0,0:32,32:64] = -1.1 # Below min\nnp_image[0,0:32,96:128] = 1.1 # Above max\n# In G\nnp_image[1,0:32,64:96] = float(\"nan\")\n# In B\nnp_image[2,0:32,0:32] = float(\"-inf\")\nnp_image[2,0:32,128:128+32] = float(\"+inf\")\n\nchans(Tensor(np_image), cmap=\"viridis\", cm_below=\"black\", cm_above=\"white\")\n\n\n\n\n\n\n\n\n\n# 4 images, stacked 2x2\nchans(Tensor([np_image]*4).reshape(2,2,3,196,196))",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "📺 View channels"
+    ]
+  },
+  {
+    "objectID": "repr_plt.html",
+    "href": "repr_plt.html",
+    "title": "📊 View as a histogram",
+    "section": "",
+    "text": "source\n\nplot\n\n plot (x:tinygrad.tensor.Tensor, center:str='zero', max_s:int=10000,\n       plt0:Any=True, ax:Optional[matplotlib.axes._axes.Axes]=None)\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nx\nTensor\n\nTensor to explore\n\n\ncenter\nstr\nzero\nCenter plot on zero, mean, or range\n\n\nmax_s\nint\n10000\nDraw up to this many samples. =0 to draw all\n\n\nplt0\nAny\nTrue\nTake zero values into account\n\n\nax\nOptional\nNone\nOptionally provide a matplotlib axes.\n\n\nReturns\nPlotProxy\n\n\n\n\n\n\nTensor.manual_seed(42)\nt = Tensor.randn(100000)+3\nplot(t)\n\n\n\n\n\n\n\n\n\nplot(t, center=\"range\")\n\n\n\n\n\n\n\n\n\nplot(t, center=\"mean\")\n\n\n\n\n\n\n\n\n\nplot((t-3).relu())\n\n\n\n\n\n\n\n\n\nplot((t-3).relu(), plt0=False)\n\n\n\n\n\n\n\n\n\nfig, ax, = plt.subplots(figsize=(6, 2))\nfig.tight_layout()\nplot(t, ax=ax);\n\n\n\n\n\n\n\n\n\n# # |hide\n# if torch.cuda.is_available():\n#     cudamem = torch.cuda.memory_allocated()\n#     print(f\"before allocation: {torch.cuda.memory_allocated()}\")\n#     numbers = torch.zeros((1, 64, 512), device=\"cuda\")\n#     torch.cuda.synchronize()\n#     print(f\"after allocation: {torch.cuda.memory_allocated()}\")\n#     display(plot(numbers))\n#     print(f\"after rgb: {torch.cuda.memory_allocated()}\")\n\n#     del numbers\n#     gc.collect()\n#     # torch.cuda.memory.empty_cache()\n#     # torch.cuda.synchronize()\n\n#     print(f\"after cleanup: {torch.cuda.memory_allocated()}\")\n#     test_eq(cudamem &gt;= torch.cuda.memory_allocated(), True)",
+    "crumbs": [
+      "🔎 Tensor representations",
+      "📊 View as a histogram"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "🫀 Lovely Grad",
+    "section": "Install",
+    "text": "Install\npip install lovely-grad",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "🫀 Lovely Grad",
+    "section": "How to use",
+    "text": "How to use\nHow often do you find yourself debugging TinyGrad code? You dump a tensor to the cell output, and see this:\n\nnumbers\n\n&lt;Tensor &lt;UOp CPU (3, 196, 196) float (&lt;Ops.COPY: 7&gt;, None)&gt; on CPU with grad None&gt;\n\n\nOr this\n\nnumbers.numpy()\n\narray([[[-0.3541, -0.3369, ..., -0.4739,  2.2489],\n        [-0.4054, -0.4226, ..., -0.8507,  2.1633],\n        ...,\n        [-0.8507, -0.7822, ..., -1.5014,  2.1804],\n        [-0.8335, -0.8164, ..., -1.5528,  2.1119]],\n\n       [[-0.1975, -0.1975, ..., -0.3725,  2.4111],\n        [-0.25  , -0.2325, ..., -0.6702,  2.3585],\n        ...,\n        [-0.3901, -0.2325, ..., -1.2304,  2.4111],\n        [-0.4076, -0.285 , ..., -1.2829,  2.341 ]],\n\n       [[-0.6715, -0.9853, ..., -0.689 ,  2.396 ],\n        [-0.7238, -1.0724, ..., -1.0201,  2.3263],\n        ...,\n        [-1.1944, -1.4559, ..., -1.4733,  2.4308],\n        [-1.2293, -1.5256, ..., -1.5256,  2.3611]]], dtype=float32)\n\n\nWas it really useful for you, as a human, to see all these numbers?\nWhat is the shape? The size?\nWhat are the statistics?\nAre any of the values nan or inf?\n\nIs it an image of a man holding a tench?\n\nfrom lovely_grad import monkey_patch; monkey_patch()",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#summary",
+    "href": "index.html#summary",
+    "title": "🫀 Lovely Grad",
+    "section": "Summary",
+    "text": "Summary\n\nnumbers\n\nTensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 CPU\n\n\nBetter, huh?\n\nnumbers[1,:6,1] # Still shows values if there are not too many.\n\nTensor[6] x∈[-0.443, -0.197] μ=-0.311 σ=0.091 CPU [-0.197, -0.232, -0.285, -0.373, -0.443, -0.338]\n\n\n\nspicy = numbers[0,:12,0].numpy() # Please add native support for this.\nspicy[0] *= 10000.0\nspicy[1] /= 10000.0\nspicy[3] = np.inf\nspicy[4] = -np.inf\nspicy[5] = np.nan\nspicy = Tensor(spicy).reshape(2,6)\n\nspicy # Spicy stuff\n\n\nTensor[2, 6] n=12 x∈[-3.541e+03, -4.054e-05] μ=-393.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized RESHAPE\n\n\n\n\nTensor.zeros(10, 10) # A zero tensor - make it obvious\n\nTensor[10, 10] n=100 CPU Lazy CONST\n\n\n\nspicy += 1 # Make ot lazy again\nspicy.p # The plain old way\n\n&lt;Tensor &lt;UOp CPU (2, 6) float (&lt;Ops.ASSIGN: 69&gt;, None)&gt; on CPU with grad None&gt;\n\n\n\nspicy.v # Verbose\n\n\n&lt;Tensor &lt;UOp CPU (2, 6) float (&lt;Ops.ASSIGN: 69&gt;, None)&gt; on CPU with grad None&gt;\nTensor[2, 6] n=12 x∈[-3.540e+03, 1.000] μ=-392.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized ASSIGN",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#but-i-want-to-be-lazy",
+    "href": "index.html#but-i-want-to-be-lazy",
+    "title": "🫀 Lovely Grad",
+    "section": "But I want to be lazy!",
+    "text": "But I want to be lazy!\n\nfrom lovely_grad import set_config\nfrom lovely_grad import config # This is a context manager by the way.\n\n\nset_config(auto_realize=False)\ns = spicy+1\ns # No realization\n\nTensor[2, 6] n=12 CPU Lazy ADD\n\n\n\ns # still lazy\n\nTensor[2, 6] n=12 CPU Lazy ADD\n\n\n\nset_config(auto_realize=True)\ns # Will realize\n\n\nTensor[2, 6] n=12 x∈[-3.539e+03, 2.000] μ=-391.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU Realized ADD\n\n\n\n\ns # Already realized\n\n\nTensor[2, 6] n=12 x∈[-3.539e+03, 2.000] μ=-391.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#going-.deeper",
+    "href": "index.html#going-.deeper",
+    "title": "🫀 Lovely Grad",
+    "section": "Going .deeper",
+    "text": "Going .deeper\n\nnumbers.deeper\n\nTensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 CPU\n  Tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036 CPU\n  Tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973 CPU\n  Tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178 CPU\n\n\n\n# You can go deeper if you need to\nnumbers[:,:3,:5].deeper(2)\n\nTensor[3, 3, 5] n=45 x∈[-1.316, -0.197] μ=-0.593 σ=0.306 CPU\n  Tensor[3, 5] n=15 x∈[-0.765, -0.337] μ=-0.492 σ=0.124 CPU\n    Tensor[5] x∈[-0.440, -0.337] μ=-0.385 σ=0.041 CPU [-0.354, -0.337, -0.405, -0.440, -0.388]\n    Tensor[5] x∈[-0.662, -0.405] μ=-0.512 σ=0.108 CPU [-0.405, -0.423, -0.491, -0.577, -0.662]\n    Tensor[5] x∈[-0.765, -0.474] μ=-0.580 σ=0.125 CPU [-0.474, -0.474, -0.542, -0.645, -0.765]\n  Tensor[3, 5] n=15 x∈[-0.513, -0.197] μ=-0.321 σ=0.099 CPU\n    Tensor[5] x∈[-0.303, -0.197] μ=-0.243 σ=0.055 CPU [-0.197, -0.197, -0.303, -0.303, -0.215]\n    Tensor[5] x∈[-0.408, -0.232] μ=-0.327 σ=0.084 CPU [-0.250, -0.232, -0.338, -0.408, -0.408]\n    Tensor[5] x∈[-0.513, -0.285] μ=-0.394 σ=0.102 CPU [-0.303, -0.285, -0.390, -0.478, -0.513]\n  Tensor[3, 5] n=15 x∈[-1.316, -0.672] μ=-0.964 σ=0.176 CPU\n    Tensor[5] x∈[-0.985, -0.672] μ=-0.846 σ=0.123 CPU [-0.672, -0.985, -0.881, -0.776, -0.916]\n    Tensor[5] x∈[-1.212, -0.724] μ=-0.989 σ=0.179 CPU [-0.724, -1.072, -0.968, -0.968, -1.212]\n    Tensor[5] x∈[-1.316, -0.828] μ=-1.058 σ=0.179 CPU [-0.828, -1.125, -1.020, -1.003, -1.316]",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#now-in-.rgb-color",
+    "href": "index.html#now-in-.rgb-color",
+    "title": "🫀 Lovely Grad",
+    "section": "Now in .rgb color",
+    "text": "Now in .rgb color\nThe important queston - is it our man?\n\nnumbers.rgb\n\n\n\n\n\n\n\n\nMaaaaybe? Looks like someone normalized him.\n\nin_stats = ( [0.485, 0.456, 0.406],     # mean\n             [0.229, 0.224, 0.225] )    # std\n\n# numbers.rgb(in_stats, cl=True) # For channel-last input format\nnumbers.rgb(in_stats)\n\n\n\n\n\n\n\n\nIt’s indeed our hero, the Tenchman!",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#plt-the-statistics",
+    "href": "index.html#plt-the-statistics",
+    "title": "🫀 Lovely Grad",
+    "section": ".plt the statistics",
+    "text": ".plt the statistics\n\n(numbers+3).plt\n\n\n\n\n\n\n\n\n\n(numbers+3).plt(center=\"mean\", max_s=1000)\n\n\n\n\n\n\n\n\n\n(numbers+3).plt(center=\"range\")",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#see-the-.chans",
+    "href": "index.html#see-the-.chans",
+    "title": "🫀 Lovely Grad",
+    "section": "See the .chans",
+    "text": "See the .chans\n\n# .chans will map values betwen [-1,1] to colors.\n# Make our values fit into that range to avoid clipping.\nmean = Tensor(in_stats[0])[:,None,None]\nstd = Tensor(in_stats[1])[:,None,None]\nnumbers_01 = (numbers*std + mean)\nnumbers_01\n\n\nTensor[3, 196, 196] n=115248 x∈[1.815e-09, 1.000] μ=0.361 σ=0.248 CPU Realized ADD\n\n\n\n\nnumbers_01.chans\n\n\n\n\n\n\n\n\nLet’s try with a Convolutional Neural Network\n\nimport tinygrad.nn as nn\n\n\nclass VGG_top:\n    \"\"\"Top 6 layers (until 3rd conv) of VGG\"\"\"\n\n    def __init__(self, weights=None):\n        self.layers = [\n            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=True),\n            Tensor.relu,\n            Tensor.max_pool2d,\n            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=True),\n            Tensor.relu,\n            Tensor.max_pool2d,\n        ]\n        if weights:\n            self.layers[0].weight = Tensor(weights[\"0.weight\"].numpy())\n            self.layers[0].bias = Tensor(weights[\"0.bias\"].numpy())\n            self.layers[3].weight = Tensor(weights[\"3.weight\"].numpy())\n            self.layers[3].bias = Tensor(weights[\"3.bias\"].numpy())\n\n    def __call__(self, x: Tensor):\n        return x.sequential(self.layers)\n\n\nfrom tinygrad.nn.state import safe_load\ntg_vgg = VGG_top(safe_load(\"features.safetensors\"))\n\n\nacts = tg_vgg(numbers[None])/2\nacts\n\n\nTensor[1, 128, 49, 49] n=307328 x∈[0., 12.508] μ=0.367 σ=0.634 CPU Realized MUL\n\n\n\n\nacts[0,:4].chans(cmap=\"coolwarm\", scale=4)",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#grouping",
+    "href": "index.html#grouping",
+    "title": "🫀 Lovely Grad",
+    "section": "Grouping",
+    "text": "Grouping\n\n# Make 8 images with progressively higher brightness and stack them 2x2x2.\neight_images = (Tensor.stack(*[numbers]*8) + Tensor(np.linspace(-2, 2, 8).astype(np.float32)).reshape(8,1,1,1))\neight_images = (eight_images\n                    .mul(Tensor(in_stats[1]).reshape(1,3,1,1))\n                    .add(Tensor(in_stats[0]).reshape(1,3,1,1))\n                    .clip(0,1)\n                    .reshape(2,2,2,3,196,196)\n)\neight_images\n\n\nTensor[2, 2, 2, 3, 196, 196] n=921984 x∈[0., 1.000] μ=0.382 σ=0.319 CPU Realized RESHAPE\n\n\n\n\neight_images.rgb\n\n\n\n\n\n\n\n\n\n# Weights of the second conv layer of VGG11\ntg_vgg.layers[3].weight\n\nTensor[128, 64, 3, 3] n=73728 x∈[-0.783, 0.776] μ=-0.004 σ=0.065 CPU\n\n\nI want +/- 2σ to fall in the range [-1..1]\n\nweights = tg_vgg.layers[3].weight\nweights = weights / (2*2*weights.std()) # *2 because we want 2σ on both sides, so 4σ\n# weights += weights.std() * 2\nweights.plt\n\n\n\n\n\n\n\n\n\n# Weights of the second conv layer (64ch -&gt; 128ch) of VGG11,\n# grouped per output channel.\nweights.chans(frame_px=1, gutter_px=0)\n\n\n\n\n\n\n\n\nIt’s a bit hard to see. Scale up 10x, but onyl show the first 4 filters.\n\nweights[:4].chans(frame_px=1, gutter_px=0, scale=10)",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#options-docs",
+    "href": "index.html#options-docs",
+    "title": "🫀 Lovely Grad",
+    "section": "Options | Docs",
+    "text": "Options | Docs\n\nimport lovely_grad as lg\n\n\nlg.set_config(precision=1, sci_mode=True, color=False)\nTensor([1, 2, float(\"NaN\")])\n\nTensor[3] x∈[1.0e+00, 2.0e+00] μ=nan σ=nan CPU Realized COPY [1.0e+00, 2.0e+00, nan]\n\n\n\nlg.set_config(precision=None, sci_mode=None, color=None) # None -&gt; Reset to defaults\n\n\nprint(Tensor([1., 2]))\n# Or with config context manager.\nwith lg.config(sci_mode=True, precision=5):\n    print(Tensor([1., 2]))\n\nprint(Tensor([1., 2]))\n\nTensor[2] μ=1.500 σ=0.707 CPU Realized COPY [1.000, 2.000]\nTensor[2] μ=1.50000e+00 σ=7.07107e-01 CPU Realized COPY [1.00000e+00, 2.00000e+00]\nTensor[2] μ=1.500 σ=0.707 CPU Realized COPY [1.000, 2.000]",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#without-.monkey_patch",
+    "href": "index.html#without-.monkey_patch",
+    "title": "🫀 Lovely Grad",
+    "section": "Without .monkey_patch",
+    "text": "Without .monkey_patch\n\nlg.lovely(spicy)\n\n\nTensor[2, 6] n=12 x∈[-3.540e+03, 1.000] μ=-392.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\nlg.lovely(spicy, verbose=True)\n\n\n&lt;Tensor &lt;UOp CPU (2, 6) float ShapeTracker(views=(View(shape=(2, 6), strides=(6, 1), offset=0, mask=None, contiguous=True),))&gt; on CPU with grad None&gt;\nTensor[2, 6] n=12 x∈[-3.540e+03, 1.000] μ=-392.827 σ=1.113e+03 +Inf! -Inf! NaN! CPU\n\n\n\n\nlg.lovely(numbers, depth=1)\n\nTensor[3, 196, 196] n=115248 x∈[-2.118, 2.640] μ=-0.388 σ=1.073 CPU\n  Tensor[196, 196] n=38416 x∈[-2.118, 2.249] μ=-0.324 σ=1.036 CPU\n  Tensor[196, 196] n=38416 x∈[-1.966, 2.429] μ=-0.274 σ=0.973 CPU\n  Tensor[196, 196] n=38416 x∈[-1.804, 2.640] μ=-0.567 σ=1.178 CPU\n\n\n\nlg.rgb(numbers, in_stats)\n\n\n\n\n\n\n\n\n\nlg.plot(numbers, center=\"mean\")\n\n\n\n\n\n\n\n\n\nlg.chans(numbers_01)",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  },
+  {
+    "objectID": "index.html#matplotlib-integration-docs",
+    "href": "index.html#matplotlib-integration-docs",
+    "title": "🫀 Lovely Grad",
+    "section": "Matplotlib integration | Docs",
+    "text": "Matplotlib integration | Docs\n\nnumbers.rgb(in_stats).fig # matplotlib figure\n\n\n\n\n\n\n\n\n\n(numbers*0.3+0.5).chans.fig # matplotlib figure\n\n\n\n\n\n\n\n\n\nnumbers.plt.fig.savefig('pretty.svg') # Save it\n\n\n!file pretty.svg; rm pretty.svg\n\npretty.svg: SVG Scalable Vector Graphics image\n\n\n\nAdd content to existing Axes\n\nfig = plt.figure(figsize=(8,3))\nfig.set_constrained_layout(True)\ngs = fig.add_gridspec(2,2)\nax1 = fig.add_subplot(gs[0, :])\nax2 = fig.add_subplot(gs[1, 0])\nax3 = fig.add_subplot(gs[1,1:])\n\nax2.set_axis_off()\nax3.set_axis_off()\n\nnumbers_01.plt(ax=ax1)\nnumbers_01.rgb(ax=ax2)\nnumbers_01.chans(ax=ax3);",
+    "crumbs": [
+      "🫀 Lovely Grad"
+    ]
+  }
+]
